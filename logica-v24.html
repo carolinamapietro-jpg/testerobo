@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>EA Falha de Exaustão v24 — Lógica Completa</title>
+<style>
+  body { margin: 0; background: #0d1117; font-family: 'Segoe UI', Arial, sans-serif; }
+</style>
+</head>
+<body>
+<svg width="1300" height="1120" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="arrowG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+  </marker>
+  <marker id="arrowR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#f85149"/>
+  </marker>
+  <marker id="arrowW" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#e6edf3"/>
+  </marker>
+  <marker id="arrowY" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#d29922"/>
+  </marker>
+</defs>
+
+<!-- ===== BACKGROUND ===== -->
+<rect width="1300" height="1120" fill="#0d1117"/>
+
+<!-- ===== TÍTULO ===== -->
+<rect x="0" y="0" width="1300" height="52" fill="#161b22"/>
+<text x="650" y="22" fill="#e6edf3" font-size="20" font-weight="bold" text-anchor="middle">EA Falha de Exaustão v24 — Lógica Completa de Entradas e Saídas</text>
+<text x="650" y="42" fill="#8b949e" font-size="13" text-anchor="middle">USDJPY M5 · Reversão à MA20 · Lote 0.1 · Conta 10.000 EUR</text>
+
+<!-- =====================================================
+     COLUNA ESQUERDA: COMPRA (Falha de Fundo)
+     ===================================================== -->
+
+<rect x="15" y="60" width="615" height="38" rx="6" fill="#0e4429"/>
+<text x="322" y="84" fill="#3fb950" font-size="17" font-weight="bold" text-anchor="middle">▲  COMPRA — Falha de Fundo  ▲</text>
+<text x="322" y="95" fill="#56d364" font-size="11" text-anchor="middle">Preço caiu demais, tentou romper mínima — e falhou. Reversão para cima.</text>
+
+<!-- Chart background BUY -->
+<rect x="15" y="100" width="615" height="400" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+
+<!-- ---- Price levels BUY ---- -->
+<!-- MA20 line y=130 -->
+<line x1="25" x2="580" y1="140" y2="140" stroke="#d29922" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="585" y="144" fill="#d29922" font-size="11" font-weight="bold">MA20</text>
+
+<!-- 2×ATR zone label -->
+<rect x="25" y="142" width="8" height="90" fill="#d29922" opacity="0.15"/>
+<line x1="25" x2="33" y1="142" y2="142" stroke="#d29922" stroke-width="1" opacity="0.6"/>
+<line x1="25" x2="33" y1="232" y2="232" stroke="#d29922" stroke-width="1" opacity="0.6"/>
+<line x1="29" x2="29" y1="142" y2="232" stroke="#d29922" stroke-width="1" opacity="0.6"/>
+<text x="38" y="185" fill="#d29922" font-size="10">≥ 2×ATR</text>
+<text x="38" y="197" fill="#d29922" font-size="10">distância</text>
+
+<!-- TP line y=148 -->
+<line x1="40" x2="580" y1="148" y2="148" stroke="#3fb950" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="585" y="152" fill="#3fb950" font-size="10">TP</text>
+<text x="585" y="162" fill="#3fb950" font-size="9">+2×risco</text>
+
+<!-- Break-even indicator -->
+<line x1="40" x2="580" y1="193" y2="193" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="585" y="197" fill="#58a6ff" font-size="10">Break</text>
+<text x="585" y="207" fill="#58a6ff" font-size="9">Even</text>
+
+<!-- Entry/Trigger line y=240 -->
+<line x1="40" x2="580" y1="240" y2="240" stroke="#3fb950" stroke-width="2" stroke-dasharray="7,4"/>
+<text x="585" y="244" fill="#3fb950" font-size="11" font-weight="bold">ENTRADA</text>
+<text x="585" y="255" fill="#3fb950" font-size="9">H1 + 0.08×ATR</text>
+
+<!-- Anti-gap zone (entry + 0.5 ATR) -->
+<rect x="40" y="241" width="540" height="28" fill="#3fb950" opacity="0.07"/>
+<text x="200" y="259" fill="#3fb950" font-size="10" opacity="0.7">◄ zona válida de entrada (até +0.5×ATR) ►</text>
+<line x1="40" x2="580" y1="268" y2="268" stroke="#3fb950" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+<text x="585" y="272" fill="#3fb950" font-size="9" opacity="0.7">Anti-gap</text>
+<text x="585" y="282" fill="#3fb950" font-size="9" opacity="0.7">limite</text>
+
+<!-- SL line y=440 -->
+<line x1="40" x2="580" y1="440" y2="440" stroke="#f85149" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="585" y="444" fill="#f85149" font-size="11" font-weight="bold">SL</text>
+<text x="585" y="454" fill="#f85149" font-size="9">L1 − 1×ATR</text>
+
+<!-- ---- CANDLES BUY ---- -->
+
+<!-- Candle 3 (2 before signal): y=280 area, normal bearish -->
+<line x1="95" x2="95" y1="295" y2="400" stroke="#8b949e" stroke-width="1.5"/>
+<rect x="83" y="315" width="24" height="55" fill="#f85149" rx="1"/>
+<text x="95" y="420" fill="#8b949e" font-size="10" text-anchor="middle">candle</text>
+<text x="95" y="430" fill="#8b949e" font-size="10" text-anchor="middle">anterior</text>
+
+<!-- Candle 2 (previous): y=300-390 -->
+<line x1="165" x2="165" y1="285" y2="420" stroke="#8b949e" stroke-width="1.5"/>
+<rect x="153" y="310" width="24" height="68" fill="#f85149" rx="1"/>
+<!-- H2 label -->
+<line x1="35" x2="540" y1="285" y2="285" stroke="#8b949e" stroke-width="0.8" stroke-dasharray="3,5" opacity="0.5"/>
+<!-- L2 label -->
+<line x1="35" x2="540" y1="420" y2="420" stroke="#8b949e" stroke-width="0.8" stroke-dasharray="3,5" opacity="0.5"/>
+<text x="45" y="283" fill="#8b949e" font-size="10">H2</text>
+<text x="45" y="418" fill="#8b949e" font-size="10">L2</text>
+<text x="165" y="430" fill="#8b949e" font-size="10" text-anchor="middle">candle</text>
+<text x="165" y="440" fill="#8b949e" font-size="10" text-anchor="middle">C2</text>
+
+<!-- Candle 1 (SIGNAL): hammer/pin bar -->
+<!-- High H1 at y=238 (= entry trigger) -->
+<!-- Open/Close body between y=380-420 -->
+<!-- Low L1 at y=460 (broke below L2 at 420) -->
+<line x1="255" x2="255" y1="238" y2="462" stroke="#e6edf3" stroke-width="2"/>
+<!-- Body (bullish, small) -->
+<rect x="243" y="390" width="24" height="32" fill="#3fb950" rx="1" stroke="#56d364" stroke-width="1"/>
+<!-- H1 marker -->
+<text x="45" y="236" fill="#3fb950" font-size="10" font-weight="bold">H1 →</text>
+<!-- L1 marker -->
+<text x="45" y="467" fill="#f85149" font-size="10">L1 →</text>
+<line x1="35" x2="540" y1="462" y2="462" stroke="#f85149" stroke-width="0.8" stroke-dasharray="3,5" opacity="0.5"/>
+
+<!-- Label signal candle -->
+<text x="255" y="478" fill="#3fb950" font-size="11" text-anchor="middle" font-weight="bold">SINAL ★</text>
+<text x="255" y="490" fill="#3fb950" font-size="10" text-anchor="middle">Candle C1</text>
+
+<!-- Arrows for pattern explanation -->
+<!-- L1 < L2: down arrow on signal candle low -->
+<line x1="255" x2="255" y1="422" y2="460" stroke="#f85149" stroke-width="2" marker-end="url(#arrowR)"/>
+<text x="270" y="445" fill="#f85149" font-size="10">L1 &lt; L2</text>
+<text x="270" y="456" fill="#f85149" font-size="9">rompeu abaixo</text>
+
+<!-- C1 >= L2: up arrow showing close back above L2 -->
+<line x1="245" x2="245" y1="460" y2="422" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowG)"/>
+<text x="170" y="448" fill="#3fb950" font-size="10">C1 ≥ L2</text>
+<text x="170" y="458" fill="#3fb950" font-size="9">fechou acima!</text>
+
+<!-- Candle 0 (entry candle): next candle going up -->
+<line x1="345" x2="345" y1="230" y2="390" stroke="#e6edf3" stroke-width="2"/>
+<rect x="333" y="242" width="24" height="100" fill="#3fb950" rx="1" stroke="#56d364" stroke-width="1"/>
+<text x="345" y="490" fill="#3fb950" font-size="11" text-anchor="middle" font-weight="bold">ENTRADA</text>
+<text x="345" y="502" fill="#3fb950" font-size="9" text-anchor="middle">ASK ≥ H1+0.08×ATR</text>
+
+<!-- Arrow from signal to entry candle -->
+<line x1="280" x2="330" y1="240" y2="240" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arrowG)"/>
+<text x="290" y="233" fill="#3fb950" font-size="9">gatilho!</text>
+
+<!-- Arrow from entry to TP -->
+<line x1="380" x2="430" y1="240" y2="150" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowG)"/>
+
+<!-- Arrow from entry to SL -->
+<line x1="380" x2="430" y1="242" y2="438" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR)"/>
+
+<!-- Break-even arrow -->
+<line x1="350" x2="490" y1="235" y2="193" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrowW)"/>
+<text x="390" y="210" fill="#58a6ff" font-size="9">SL move p/ entrada</text>
+<text x="390" y="220" fill="#58a6ff" font-size="9">quando lucro ≥ 1.5×ATR</text>
+
+<!-- Pavio mínimo annotation -->
+<line x1="269" x2="280" y1="462" y2="470" stroke="#8b949e" stroke-width="1"/>
+<line x1="269" x2="280" y1="390" y2="470" stroke="#8b949e" stroke-width="0" />
+<rect x="163" y="472" width="165" height="22" rx="3" fill="#21262d"/>
+<text x="245" y="487" fill="#8b949e" font-size="10" text-anchor="middle">pavio inf ≥ 0.25×ATR obrigatório</text>
+
+<!-- Pavio visual bracket -->
+<line x1="242" x2="236" y1="390" y2="390" stroke="#8b949e" stroke-width="1"/>
+<line x1="242" x2="236" y1="462" y2="462" stroke="#8b949e" stroke-width="1"/>
+<line x1="236" x2="236" y1="390" y2="462" stroke="#8b949e" stroke-width="1"/>
+<text x="230" y="430" fill="#8b949e" font-size="9" text-anchor="end">pavio</text>
+<text x="230" y="440" fill="#8b949e" font-size="9" text-anchor="end">inf</text>
+
+<!-- =====================================================
+     COLUNA DIREITA: VENDA (Falha de Topo)
+     ===================================================== -->
+
+<rect x="660" y="60" width="625" height="38" rx="6" fill="#3d1016"/>
+<text x="972" y="84" fill="#f85149" font-size="17" font-weight="bold" text-anchor="middle">▼  VENDA — Falha de Topo  ▼</text>
+<text x="972" y="95" fill="#ff7b72" font-size="11" text-anchor="middle">Preço subiu demais, tentou romper máxima — e falhou. Reversão para baixo.</text>
+
+<!-- Chart background SELL -->
+<rect x="660" y="100" width="625" height="400" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+
+<!-- ---- Price levels SELL ---- -->
+<!-- SL line y=135 (above) -->
+<line x1="680" x2="1235" y1="138" y2="138" stroke="#f85149" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="1240" y="142" fill="#f85149" font-size="11" font-weight="bold">SL</text>
+<text x="1240" y="152" fill="#f85149" font-size="9">H1 + 1×ATR</text>
+
+<!-- Anti-gap zone SELL -->
+<rect x="680" y="175" width="555" height="28" fill="#f85149" opacity="0.07"/>
+<line x1="680" x2="1235" y1="175" y2="175" stroke="#f85149" stroke-width="1" stroke-dasharray="2,4" opacity="0.4"/>
+<text x="1240" y="179" fill="#f85149" font-size="9" opacity="0.7">Anti-gap</text>
+<text x="1240" y="189" fill="#f85149" font-size="9" opacity="0.7">limite</text>
+<text x="820" y="194" fill="#f85149" font-size="10" opacity="0.7">◄ zona válida de entrada (até −0.5×ATR) ►</text>
+
+<!-- Entry/Trigger SELL y=202 -->
+<line x1="680" x2="1235" y1="202" y2="202" stroke="#f85149" stroke-width="2" stroke-dasharray="7,4"/>
+<text x="1240" y="206" fill="#f85149" font-size="11" font-weight="bold">ENTRADA</text>
+<text x="1240" y="216" fill="#f85149" font-size="9">L1 − 0.08×ATR</text>
+
+<!-- Break-even SELL -->
+<line x1="680" x2="1235" y1="255" y2="255" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="1240" y="259" fill="#58a6ff" font-size="10">Break</text>
+<text x="1240" y="269" fill="#58a6ff" font-size="9">Even</text>
+
+<!-- MA20 line y=318 (below price for SELL) -->
+<line x1="680" x2="1235" y1="318" y2="318" stroke="#d29922" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="1240" y="322" fill="#d29922" font-size="11" font-weight="bold">MA20</text>
+
+<!-- 2×ATR zone label SELL -->
+<rect x="672" y="202" width="8" height="116" fill="#d29922" opacity="0.15"/>
+<line x1="672" x2="680" y1="202" y2="202" stroke="#d29922" stroke-width="1" opacity="0.6"/>
+<line x1="672" x2="680" y1="318" y2="318" stroke="#d29922" stroke-width="1" opacity="0.6"/>
+<line x1="676" x2="676" y1="202" y2="318" stroke="#d29922" stroke-width="1" opacity="0.6"/>
+<text x="674" y="256" fill="#d29922" font-size="10" text-anchor="middle">≥</text>
+<text x="674" y="268" fill="#d29922" font-size="10" text-anchor="middle">2</text>
+<text x="674" y="280" fill="#d29922" font-size="10" text-anchor="middle">×</text>
+<text x="674" y="292" fill="#d29922" font-size="10" text-anchor="middle">A</text>
+<text x="674" y="304" fill="#d29922" font-size="10" text-anchor="middle">T</text>
+<text x="674" y="316" fill="#d29922" font-size="10" text-anchor="middle">R</text>
+
+<!-- TP line SELL y=440 -->
+<line x1="680" x2="1235" y1="440" y2="440" stroke="#f85149" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="1240" y="444" fill="#f85149" font-size="10">TP</text>
+<text x="1240" y="454" fill="#f85149" font-size="9">−2×risco</text>
+
+<!-- ---- CANDLES SELL ---- -->
+
+<!-- Candle 3: normal bullish -->
+<line x1="745" x2="745" y1="185" y2="360" stroke="#8b949e" stroke-width="1.5"/>
+<rect x="733" y="220" width="24" height="80" fill="#3fb950" rx="1"/>
+<text x="745" y="380" fill="#8b949e" font-size="10" text-anchor="middle">candle</text>
+<text x="745" y="390" fill="#8b949e" font-size="10" text-anchor="middle">anterior</text>
+
+<!-- Candle 2 (previous): -->
+<line x1="820" x2="820" y1="165" y2="345" stroke="#8b949e" stroke-width="1.5"/>
+<rect x="808" y="200" width="24" height="80" fill="#3fb950" rx="1"/>
+<!-- H2 and L2 dashed lines -->
+<line x1="680" x2="1195" y1="165" y2="165" stroke="#8b949e" stroke-width="0.8" stroke-dasharray="3,5" opacity="0.5"/>
+<line x1="680" x2="1195" y1="345" y2="345" stroke="#8b949e" stroke-width="0.8" stroke-dasharray="3,5" opacity="0.5"/>
+<text x="690" y="163" fill="#8b949e" font-size="10">H2</text>
+<text x="690" y="343" fill="#8b949e" font-size="10">L2</text>
+<text x="820" y="380" fill="#8b949e" font-size="10" text-anchor="middle">candle</text>
+<text x="820" y="390" fill="#8b949e" font-size="10" text-anchor="middle">C2</text>
+
+<!-- Candle 1 (SIGNAL): shooting star/inverted hammer -->
+<!-- High H1 at y=138 (above H2=165) -->
+<!-- Body between y=165-200 (close <= H2) -->
+<!-- Low L1 at y=200 (= entry trigger area) -->
+<line x1="910" x2="910" y1="138" y2="340" stroke="#e6edf3" stroke-width="2"/>
+<rect x="898" y="168" width="24" height="34" fill="#f85149" rx="1" stroke="#ff7b72" stroke-width="1"/>
+<!-- H1 marker -->
+<text x="690" y="136" fill="#f85149" font-size="10" font-weight="bold">H1 →</text>
+<!-- L1 marker -->
+<text x="690" y="342" fill="#f85149" font-size="10">L1 →</text>
+
+<!-- Label signal candle -->
+<text x="910" y="380" fill="#f85149" font-size="11" text-anchor="middle" font-weight="bold">SINAL ★</text>
+<text x="910" y="392" fill="#f85149" font-size="10" text-anchor="middle">Candle C1</text>
+
+<!-- H1 > H2 arrow (up, showing fake breakout above H2) -->
+<line x1="910" x2="910" y1="165" y2="140" stroke="#f85149" stroke-width="2" marker-end="url(#arrowR)"/>
+<text x="920" y="152" fill="#f85149" font-size="10">H1 &gt; H2</text>
+<text x="920" y="163" fill="#f85149" font-size="9">rompeu acima</text>
+
+<!-- C1 <= H2 arrow (close came back below H2) -->
+<line x1="900" x2="900" y1="140" y2="163" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowG)"/>
+<text x="800" y="150" fill="#3fb950" font-size="10">C1 ≤ H2</text>
+<text x="800" y="161" fill="#3fb950" font-size="9">fechou abaixo!</text>
+
+<!-- Candle 0 (entry candle): next candle going down -->
+<line x1="1000" x2="1000" y1="170" y2="440" stroke="#e6edf3" stroke-width="2"/>
+<rect x="988" y="205" width="24" height="185" fill="#f85149" rx="1" stroke="#ff7b72" stroke-width="1"/>
+<text x="1000" y="460" fill="#f85149" font-size="11" text-anchor="middle" font-weight="bold">ENTRADA</text>
+<text x="1000" y="472" fill="#f85149" font-size="9" text-anchor="middle">BID ≤ L1−0.08×ATR</text>
+
+<!-- Arrow from signal to entry candle SELL -->
+<line x1="935" x2="984" y1="202" y2="202" stroke="#f85149" stroke-width="1.5" marker-end="url(#arrowR)"/>
+<text x="940" y="196" fill="#f85149" font-size="9">gatilho!</text>
+
+<!-- Arrow from entry to TP (down) SELL -->
+<line x1="1035" x2="1080" y1="204" y2="438" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR)"/>
+
+<!-- Arrow from entry to SL (up) SELL -->
+<line x1="1035" x2="1080" y1="200" y2="140" stroke="#f85149" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowR)"/>
+
+<!-- Break-even annotation SELL -->
+<line x1="1010" x2="1120" y1="202" y2="255" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#arrowW)"/>
+<text x="1035" y="232" fill="#58a6ff" font-size="9">SL move p/ entrada</text>
+<text x="1035" y="242" fill="#58a6ff" font-size="9">quando lucro ≥ 1.5×ATR</text>
+
+<!-- Pavio superior annotation SELL -->
+<line x1="922" x2="933" y1="138" y2="130" stroke="#8b949e" stroke-width="1"/>
+<line x1="922" x2="933" y1="168" y2="130" stroke="#8b949e" stroke-width="0"/>
+<rect x="823" y="100" width="175" height="22" rx="3" fill="#21262d"/>
+<text x="910" y="115" fill="#8b949e" font-size="10" text-anchor="middle">pavio sup ≥ 0.25×ATR obrigatório</text>
+
+<!-- Pavio visual bracket SELL -->
+<line x1="923" x2="929" y1="138" y2="138" stroke="#8b949e" stroke-width="1"/>
+<line x1="923" x2="929" y1="168" y2="168" stroke="#8b949e" stroke-width="1"/>
+<line x1="929" x2="929" y1="138" y2="168" stroke="#8b949e" stroke-width="1"/>
+<text x="933" y="152" fill="#8b949e" font-size="9">pavio</text>
+<text x="933" y="162" fill="#8b949e" font-size="9">sup</text>
+
+<!-- =====================================================
+     SEÇÃO INFERIOR: FILTROS + SAÍDAS
+     ===================================================== -->
+
+<!-- Separator -->
+<line x1="15" y1="510" x2="1285" y2="510" stroke="#30363d" stroke-width="1"/>
+
+<!-- ---- FILTROS DE ENTRADA (centro) ---- -->
+<rect x="15" y="518" width="615" height="220" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<rect x="15" y="518" width="615" height="30" rx="6" fill="#21262d"/>
+<text x="322" y="538" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">🔍 FILTROS DE ENTRADA (ambas direções)</text>
+
+<!-- Filter items BUY column -->
+<text x="35" y="570" fill="#8b949e" font-size="12" font-weight="bold">Verificados a cada candle fechado (M5):</text>
+
+<!-- Filter 1: Distance -->
+<rect x="25" y="578" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="43" y="590" fill="#e6edf3" font-size="12">Distância ≥ 2×ATR da MA20</text>
+<text x="43" y="603" fill="#8b949e" font-size="10">  COMPRA: C1 abaixo da MA20 por ≥ 2×ATR   |   VENDA: C1 acima da MA20 por ≥ 2×ATR</text>
+
+<!-- Filter 2: Pattern -->
+<rect x="25" y="612" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="43" y="624" fill="#e6edf3" font-size="12">Padrão de falha confirmado no candle C1</text>
+<text x="43" y="637" fill="#8b949e" font-size="10">  COMPRA: L1 &lt; L2  E  C1 ≥ L2  (falha de fundo)   |   VENDA: H1 &gt; H2  E  C1 ≤ H2  (falha de topo)</text>
+
+<!-- Filter 3: Pavio -->
+<rect x="25" y="646" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="43" y="658" fill="#e6edf3" font-size="12">Pavio mínimo ≥ 0.25×ATR</text>
+<text x="43" y="671" fill="#8b949e" font-size="10">  COMPRA: pavio inferior (min(O,C)−L1)   |   VENDA: pavio superior (H1−max(O,C))</text>
+
+<!-- Filter 4: Time -->
+<rect x="25" y="680" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="43" y="692" fill="#e6edf3" font-size="12">Horário entre 07:00 e 21:00 (servidor)</text>
+
+<!-- Filter 5: Max trades -->
+<rect x="25" y="698" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="43" y="710" fill="#e6edf3" font-size="12">Máximo 2 trades por direção por dia</text>
+
+<!-- Filter 6: Cooldown -->
+<rect x="25" y="716" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="43" y="728" fill="#e6edf3" font-size="12">Cooldown de 12 barras após SL atingido</text>
+
+<!-- ---- SAÍDAS ---- -->
+<rect x="660" y="518" width="625" height="220" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<rect x="660" y="518" width="625" height="30" rx="6" fill="#21262d"/>
+<text x="972" y="538" fill="#e6edf3" font-size="14" font-weight="bold" text-anchor="middle">🚪 SAÍDAS DE POSIÇÃO</text>
+
+<!-- Exit 1: SL -->
+<rect x="668" y="555" width="14" height="14" rx="3" fill="#3d1016"/>
+<text x="686" y="567" fill="#f85149" font-size="13" font-weight="bold">Stop Loss (SL) — automático</text>
+<text x="686" y="582" fill="#8b949e" font-size="11">COMPRA: SL = L1 − 1.0×ATR     VENDA: SL = H1 + 1.0×ATR</text>
+<text x="686" y="595" fill="#8b949e" font-size="10">Risco fixo calculado no momento do setup, respeitado até o final.</text>
+
+<!-- Exit 2: TP -->
+<rect x="668" y="604" width="14" height="14" rx="3" fill="#0e4429"/>
+<text x="686" y="616" fill="#3fb950" font-size="13" font-weight="bold">Take Profit (TP) — automático</text>
+<text x="686" y="631" fill="#8b949e" font-size="11">TP = Entrada ± 2.0 × Risco  (RR = 2 : 1)</text>
+<text x="686" y="644" fill="#8b949e" font-size="10">Break-even de 33.33%. Com taxa de acerto de 37%, a estratégia é lucrativa.</text>
+
+<!-- Exit 3: Break-even -->
+<rect x="668" y="653" width="14" height="14" rx="3" fill="#0c2d6b"/>
+<text x="686" y="665" fill="#58a6ff" font-size="13" font-weight="bold">Break-Even — move SL</text>
+<text x="686" y="680" fill="#8b949e" font-size="11">Quando lucro flutuante ≥ 1.5×ATR: SL é movido para o preço de entrada.</text>
+<text x="686" y="693" fill="#8b949e" font-size="10">Protege o capital após a posição se mover a favor.</text>
+
+<!-- Exit 4: Dynamic exit -->
+<rect x="668" y="702" width="14" height="14" rx="3" fill="#2d1f00"/>
+<text x="686" y="714" fill="#d29922" font-size="13" font-weight="bold">Saída Dinâmica (guardião extra)</text>
+<text x="686" y="729" fill="#8b949e" font-size="11">Só ativa se lucro ≥ 2×risco E candle romper estrutura oposta.</text>
+<text x="686" y="742" fill="#8b949e" font-size="10">Após ≥ 15 barras: BUY fecha se C1&lt;L2 | SELL fecha se C1&gt;H2. MinRR=2.0 → TP chega antes.</text>
+
+<!-- =====================================================
+     SEÇÃO: FLUXO DE DECISÃO (linha do tempo)
+     ===================================================== -->
+
+<line x1="15" y1="748" x2="1285" y2="748" stroke="#30363d" stroke-width="1"/>
+
+<rect x="15" y="755" width="1270" height="110" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="650" y="775" fill="#e6edf3" font-size="13" font-weight="bold" text-anchor="middle">⏱ FLUXO A CADA TICK</text>
+
+<!-- Timeline boxes -->
+<!-- Step 1 -->
+<rect x="30" y="782" width="150" height="70" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+<text x="105" y="800" fill="#58a6ff" font-size="11" font-weight="bold" text-anchor="middle">① Candle fechou?</text>
+<text x="105" y="815" fill="#8b949e" font-size="10" text-anchor="middle">Só processa setup</text>
+<text x="105" y="827" fill="#8b949e" font-size="10" text-anchor="middle">no fechamento</text>
+<text x="105" y="839" fill="#8b949e" font-size="10" text-anchor="middle">do candle M5</text>
+
+<!-- Arrow 1→2 -->
+<line x1="180" y1="817" x2="210" y2="817" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowW)"/>
+<text x="185" y="810" fill="#8b949e" font-size="9">sim</text>
+
+<!-- Step 2 -->
+<rect x="212" y="782" width="155" height="70" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+<text x="289" y="800" fill="#58a6ff" font-size="11" font-weight="bold" text-anchor="middle">② Filtros OK?</text>
+<text x="289" y="815" fill="#8b949e" font-size="10" text-anchor="middle">Horário, cooldown,</text>
+<text x="289" y="827" fill="#8b949e" font-size="10" text-anchor="middle">max trades, sem</text>
+<text x="289" y="839" fill="#8b949e" font-size="10" text-anchor="middle">posição aberta</text>
+
+<!-- Arrow 2→3 -->
+<line x1="367" y1="817" x2="397" y2="817" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowW)"/>
+<text x="370" y="810" fill="#8b949e" font-size="9">sim</text>
+
+<!-- Step 3 -->
+<rect x="399" y="782" width="170" height="70" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+<text x="484" y="800" fill="#58a6ff" font-size="11" font-weight="bold" text-anchor="middle">③ Padrão + distância?</text>
+<text x="484" y="815" fill="#8b949e" font-size="10" text-anchor="middle">Falha topo/fundo</text>
+<text x="484" y="827" fill="#8b949e" font-size="10" text-anchor="middle">+ ≥ 2×ATR da MA20</text>
+<text x="484" y="839" fill="#8b949e" font-size="10" text-anchor="middle">+ pavio ≥ 0.25×ATR</text>
+
+<!-- Arrow 3→4 -->
+<line x1="569" y1="817" x2="599" y2="817" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowW)"/>
+<text x="572" y="810" fill="#8b949e" font-size="9">sim</text>
+
+<!-- Step 4 -->
+<rect x="601" y="782" width="155" height="70" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+<text x="678" y="800" fill="#58a6ff" font-size="11" font-weight="bold" text-anchor="middle">④ Setup ativo</text>
+<text x="678" y="815" fill="#8b949e" font-size="10" text-anchor="middle">Calcula gatilho,</text>
+<text x="678" y="827" fill="#8b949e" font-size="10" text-anchor="middle">SL e TP. Aguarda</text>
+<text x="678" y="839" fill="#8b949e" font-size="10" text-anchor="middle">preço atingir gatilho</text>
+
+<!-- Arrow 4→5 -->
+<line x1="756" y1="817" x2="786" y2="817" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrowW)"/>
+<text x="757" y="810" fill="#8b949e" font-size="9">gatilho!</text>
+
+<!-- Step 5 -->
+<rect x="788" y="782" width="165" height="70" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+<text x="870" y="800" fill="#58a6ff" font-size="11" font-weight="bold" text-anchor="middle">⑤ Anti-gap check</text>
+<text x="870" y="815" fill="#8b949e" font-size="10" text-anchor="middle">Overshoot ≤ 0.5×ATR?</text>
+<text x="870" y="827" fill="#8b949e" font-size="10" text-anchor="middle">Sim → abre ordem</text>
+<text x="870" y="839" fill="#8b949e" font-size="10" text-anchor="middle">Não → cancela</text>
+
+<!-- Arrow 5→6 -->
+<line x1="953" y1="817" x2="983" y2="817" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arrowG)"/>
+<text x="956" y="810" fill="#3fb950" font-size="9">OK</text>
+
+<!-- Step 6 -->
+<rect x="985" y="782" width="155" height="70" rx="5" fill="#0e4429" stroke="#3fb950" stroke-width="1"/>
+<text x="1062" y="800" fill="#3fb950" font-size="11" font-weight="bold" text-anchor="middle">⑥ ORDEM ABERTA</text>
+<text x="1062" y="815" fill="#8b949e" font-size="10" text-anchor="middle">Market order com</text>
+<text x="1062" y="827" fill="#8b949e" font-size="10" text-anchor="middle">SL e TP definidos.</text>
+<text x="1062" y="839" fill="#e6edf3" font-size="10" text-anchor="middle">Aguarda TP, SL ou BE</text>
+
+<!-- Arrow 6→7 -->
+<line x1="1140" y1="817" x2="1170" y2="817" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arrowG)"/>
+
+<!-- Step 7 -->
+<rect x="1172" y="782" width="100" height="70" rx="5" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+<text x="1222" y="806" fill="#e6edf3" font-size="11" font-weight="bold" text-anchor="middle">⑦ Saída</text>
+<text x="1222" y="820" fill="#3fb950" font-size="10" text-anchor="middle">TP ✓</text>
+<text x="1222" y="833" fill="#f85149" font-size="10" text-anchor="middle">SL ✗</text>
+<text x="1222" y="846" fill="#58a6ff" font-size="10" text-anchor="middle">BE ↔</text>
+
+<!-- =====================================================
+     PARÂMETROS CHAVE (rodapé)
+     ===================================================== -->
+
+<line x1="15" y1="873" x2="1285" y2="873" stroke="#30363d" stroke-width="1"/>
+
+<rect x="15" y="880" width="1270" height="230" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="650" y="900" fill="#e6edf3" font-size="13" font-weight="bold" text-anchor="middle">⚙ PARÂMETROS PADRÃO v24</text>
+
+<!-- Param table headers -->
+<rect x="25" y="908" width="605" height="22" rx="3" fill="#21262d"/>
+<text x="327" y="922" fill="#8b949e" font-size="11" font-weight="bold" text-anchor="middle">PARÂMETRO</text>
+<rect x="640" y="908" width="635" height="22" rx="3" fill="#21262d"/>
+<text x="957" y="922" fill="#8b949e" font-size="11" font-weight="bold" text-anchor="middle">PARÂMETRO</text>
+
+<!-- Left params -->
+<text x="35" y="947" fill="#e6edf3" font-size="11">MinAfastamentoATR</text>
+<text x="200" y="947" fill="#d29922" font-size="11" font-weight="bold">2.0</text>
+<text x="230" y="947" fill="#8b949e" font-size="11">Distância mínima da MA20 em ATR (floor: 2.0)</text>
+
+<text x="35" y="965" fill="#e6edf3" font-size="11">SL_Folga_ATR</text>
+<text x="200" y="965" fill="#d29922" font-size="11" font-weight="bold">1.0</text>
+<text x="230" y="965" fill="#8b949e" font-size="11">Buffer acima/abaixo do extremo do pavio (floor: 0.8)</text>
+
+<text x="35" y="983" fill="#e6edf3" font-size="11">RiscoRetorno</text>
+<text x="200" y="983" fill="#d29922" font-size="11" font-weight="bold">2.0</text>
+<text x="230" y="983" fill="#8b949e" font-size="11">TP = 2× o risco  (break-even = 33.33%)</text>
+
+<text x="35" y="1001" fill="#e6edf3" font-size="11">BreakEvenATR</text>
+<text x="200" y="1001" fill="#d29922" font-size="11" font-weight="bold">1.5</text>
+<text x="230" y="1001" fill="#8b949e" font-size="11">Move SL à entrada quando flutuante ≥ 1.5×ATR (floor: 1.5)</text>
+
+<text x="35" y="1019" fill="#e6edf3" font-size="11">PavioMinimoATR</text>
+<text x="200" y="1019" fill="#d29922" font-size="11" font-weight="bold">0.25</text>
+<text x="230" y="1019" fill="#8b949e" font-size="11">Pavio mínimo do candle de sinal em ATR</text>
+
+<text x="35" y="1037" fill="#e6edf3" font-size="11">LoteInicial</text>
+<text x="200" y="1037" fill="#d29922" font-size="11" font-weight="bold">0.1</text>
+<text x="230" y="1037" fill="#8b949e" font-size="11">Lote fixo por operação</text>
+
+<!-- Right params -->
+<text x="655" y="947" fill="#e6edf3" font-size="11">MaxTradesPorDirecao</text>
+<text x="840" y="947" fill="#d29922" font-size="11" font-weight="bold">2</text>
+<text x="865" y="947" fill="#8b949e" font-size="11">Máximo de trades por direção por dia</text>
+
+<text x="655" y="965" fill="#e6edf3" font-size="11">CooldownBarrasSL</text>
+<text x="840" y="965" fill="#d29922" font-size="11" font-weight="bold">12</text>
+<text x="865" y="965" fill="#8b949e" font-size="11">Barras M5 bloqueadas após SL (= 60 minutos)</text>
+
+<text x="655" y="983" fill="#e6edf3" font-size="11">SaidaDinamicaMinRR</text>
+<text x="840" y="983" fill="#d29922" font-size="11" font-weight="bold">2.0</text>
+<text x="865" y="983" fill="#8b949e" font-size="11">= RiscoRetorno → TP sempre chega antes (fix v24)</text>
+
+<text x="655" y="1001" fill="#e6edf3" font-size="11">MinBarrasHold</text>
+<text x="840" y="1001" fill="#d29922" font-size="11" font-weight="bold">15</text>
+<text x="865" y="1001" fill="#8b949e" font-size="11">Barras mínimas antes de checar saída dinâmica</text>
+
+<text x="655" y="1019" fill="#e6edf3" font-size="11">UsarFiltroMA200</text>
+<text x="840" y="1019" fill="#f85149" font-size="11" font-weight="bold">false</text>
+<text x="865" y="1019" fill="#8b949e" font-size="11">Removido — irrelevante para reversão à MA20</text>
+
+<text x="655" y="1037" fill="#e6edf3" font-size="11">Horário</text>
+<text x="840" y="1037" fill="#d29922" font-size="11" font-weight="bold">07–21h</text>
+<text x="865" y="1037" fill="#8b949e" font-size="11">Filtro de horário do servidor MetaTrader</text>
+
+<!-- Bottom math box -->
+<rect x="25" y="1050" width="1255" height="50" rx="5" fill="#21262d"/>
+<text x="650" y="1068" fill="#e6edf3" font-size="12" font-weight="bold" text-anchor="middle">📊 MATEMÁTICA DO SISTEMA  (baseado em v23: 769 trades, Jan/2025–Jun/2026)</text>
+<text x="120" y="1089" fill="#8b949e" font-size="11">Taxa de acerto atual: 36.93%</text>
+<text x="350" y="1089" fill="#8b949e" font-size="11">Break-even com RR 2:1 = 33.33%</text>
+<text x="600" y="1089" fill="#8b949e" font-size="11">Vantagem: +3.6pp acima do break-even</text>
+<text x="870" y="1089" fill="#3fb950" font-size="12" font-weight="bold">Fator de Lucro esperado v24: ~1.17</text>
+
+</svg>
+</body>
+</html>
