@@ -70,7 +70,7 @@ input bool   PermitirCompra          = true;
 input bool   PermitirVenda           = false;  // SELL: 29.63% win v41 — desabilitado
 
 input group "=== CRYSTAL HEIKIN ASHI ==="
-input string HA_NomeIndicador        = "Crystal Heikin Ashi"; // Nome no navegador Market
+input string HA_NomeIndicador        = "Market\\Crystal Heikin Ashi"; // Caminho: Market\Crystal Heikin Ashi
 input int    HA_Buffer_Open          = 0;    // Buffer do HA Open
 input int    HA_Buffer_High          = 1;    // Buffer do HA High
 input int    HA_Buffer_Low           = 2;    // Buffer do HA Low
