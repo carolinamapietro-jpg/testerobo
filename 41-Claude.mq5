@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                     EA Falha Exaustao v39.0                      |
+//|                     EA Falha Exaustao v41.0                      |
 //|  Gestao de Risco Dinamica | Parcial TP | Circuit Breakers        |
 //+------------------------------------------------------------------+
 //
@@ -18,7 +18,7 @@
 //  [C] Winners que viram losers: sem mecanismo de breakeven, trades
 //      que chegam a 1.5xRR e retoram ao SL destroem lucros acumulados.
 //
-//  SOLUCOES v39 (3 camadas de defesa):
+//  SOLUCOES v41 (3 camadas de defesa):
 //
 //  [1] RISCO DINAMICO (mais impactante):
 //      Calcula o lote para que cada trade arrisque exatamente 1% do
@@ -42,7 +42,7 @@
 //      B) Losses consecutivos: apos 5 losses seguidos, aguarda 30
 //         barras antes de retomar. Evita entrar em sequencias ruins.
 //
-//  PROJECAO v39 vs v31:
+//  PROJECAO v41 vs v31:
 //  - Max DD estimado: ~8-12% (vs 40% no v31)
 //  - Lucro estimado com 1% risco: 8.115 * (100/203) = ~4.000 EUR/17m
 //    = 235 EUR/mes = 2.35%/mes em 10K
@@ -51,11 +51,11 @@
 //  - Recomendacao: comecar com 1.5% (meta ~3.5%/mes, DD<15%)
 //
 //  BASE: v38 (filtro H4 + MA50 Daily + regime volatilidade + BuySell)
-//  NOVIDADES v39: risco dinamico + parcial BE + circuit breakers
+//  NOVIDADES v41: risco dinamico + parcial BE + circuit breakers
 //
 //+------------------------------------------------------------------+
 #property copyright "Seu Nome"
-#property version   "39.00"
+#property version   "41.00"
 #property strict
 
 #include <Trade\Trade.mqh>
@@ -131,7 +131,7 @@ input int    HoraInicio              = 7;
 input int    HoraFim                 = 21;
 
 input group "=== COOLDOWN POS-SL ==="
-input int    CooldownBarrasSL        = 5;       // v39: elevado de 3 para 5
+input int    CooldownBarrasSL        = 5;       // v41: elevado de 3 para 5
 
 input group "=== GERAL ==="
 input ulong  MagicNumber             = 202409;
@@ -163,7 +163,7 @@ double lastATR           = 0.0;
 int    cooldownCompra    = 0;
 int    cooldownVenda     = 0;
 
-// v39: circuit breakers
+// v41: circuit breakers
 int      perdasConsecutivas   = 0;
 int      cooldownConsecutivo  = 0;
 bool     tradingBloqueadoHoje = false;
@@ -178,11 +178,11 @@ int OnInit()
    gSL_Folga_ATR      = MathMax(SL_Folga_ATR,      0.1);
 
    if(gMinAfastamentoATR != MinAfastamentoATR)
-      Print("AVISO v39: MinAfastamentoATR elevado ao floor de ", gMinAfastamentoATR);
+      Print("AVISO v41: MinAfastamentoATR elevado ao floor de ", gMinAfastamentoATR);
    if(gSL_Folga_ATR != SL_Folga_ATR)
-      Print("AVISO v39: SL_Folga_ATR elevado ao floor de ", gSL_Folga_ATR);
+      Print("AVISO v41: SL_Folga_ATR elevado ao floor de ", gSL_Folga_ATR);
 
-   Print("v39 | Risco:", (UsarRiscoDinamico
+   Print("v41 | Risco:", (UsarRiscoDinamico
             ? DoubleToString(RiscoPerTrade_PCT,1) + "%/trade din"
             : "fixo " + DoubleToString(LoteFixo,2) + " lotes"),
          " | MaxLote:", MaxLote,
@@ -204,7 +204,7 @@ int OnInit()
       hATR    == INVALID_HANDLE || hATR_Longo == INVALID_HANDLE ||
       hMA_H4  == INVALID_HANDLE || hMA_D1     == INVALID_HANDLE)
    {
-      Print("ERRO v39: falha ao criar handle de indicador.");
+      Print("ERRO v41: falha ao criar handle de indicador.");
       return INIT_FAILED;
    }
    return INIT_SUCCEEDED;
@@ -400,7 +400,7 @@ void OnTick()
       if(maxGap <= 0 || overshoot <= maxGap)
       {
          if(loteCalculado <= 0) loteCalculado = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
-         trade.Buy(loteCalculado, _Symbol, ask, precoStopLoss, precoTakeProfit, "Falha de Fundo v39");
+         trade.Buy(loteCalculado, _Symbol, ask, precoStopLoss, precoTakeProfit, "Falha de Fundo v41");
          Print("COMPRA executada | Ask:", ask, " SL:", precoStopLoss,
                " TP:", precoTakeProfit, " Lote:", loteCalculado);
       }
@@ -415,7 +415,7 @@ void OnTick()
       if(maxGap <= 0 || overshoot <= maxGap)
       {
          if(loteCalculado <= 0) loteCalculado = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
-         trade.Sell(loteCalculado, _Symbol, bid, precoStopLoss, precoTakeProfit, "Falha de Topo v39");
+         trade.Sell(loteCalculado, _Symbol, bid, precoStopLoss, precoTakeProfit, "Falha de Topo v41");
          Print("VENDA executada | Bid:", bid, " SL:", precoStopLoss,
                " TP:", precoTakeProfit, " Lote:", loteCalculado);
       }
@@ -426,7 +426,7 @@ void OnTick()
 }
 
 //+------------------------------------------------------------------+
-// v39: Parcial TP + mover SL para breakeven ao atingir ParcialTP_RR
+// v41: Parcial TP + mover SL para breakeven ao atingir ParcialTP_RR
 //
 // Logica: quando bid >= entrada + risco * ParcialTP_RR
 //   1. Fecha ParcialTP_Volume_PCT% do volume (garante lucro parcial)
@@ -529,7 +529,7 @@ void VerificarSaidaDinamica()
 }
 
 //+------------------------------------------------------------------+
-// v39: reset bloqueio diario na primeira barra de um novo dia
+// v41: reset bloqueio diario na primeira barra de um novo dia
 //+------------------------------------------------------------------+
 void VerificarResetDiario(datetime barAtual)
 {
@@ -561,7 +561,7 @@ void VerificarResetDiario(datetime barAtual)
 }
 
 //+------------------------------------------------------------------+
-// v39: lucro liquido de deals fechados no dia corrente (magic do EA)
+// v41: lucro liquido de deals fechados no dia corrente (magic do EA)
 //+------------------------------------------------------------------+
 double GetLucroHoje()
 {
@@ -586,7 +586,7 @@ double GetLucroHoje()
 }
 
 //+------------------------------------------------------------------+
-// v39: calcula lote dinamicamente para arriscar RiscoPerTrade_PCT%
+// v41: calcula lote dinamicamente para arriscar RiscoPerTrade_PCT%
 //      do equity actual com base na distancia real do SL
 //
 // Formula: lote = (equity * risco%) / (sl_em_pontos * valor_por_ponto)
@@ -647,7 +647,7 @@ void OnTradeTransaction(const MqlTradeTransaction &trans,
 
    double profit = HistoryDealGetDouble(trans.deal, DEAL_PROFIT);
 
-   // v39: rastrear perdas consecutivas
+   // v41: rastrear perdas consecutivas
    if(profit < 0.0)
    {
       perdasConsecutivas++;
@@ -660,7 +660,7 @@ void OnTradeTransaction(const MqlTradeTransaction &trans,
                CooldownPerdasConsec, " barras");
       }
 
-      // v39: verificar circuit breaker diario apos cada perda
+      // v41: verificar circuit breaker diario apos cada perda
       if(MaxPerdaDiaria_PCT > 0)
       {
          double perdaHoje   = GetLucroHoje();
